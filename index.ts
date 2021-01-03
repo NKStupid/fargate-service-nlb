@@ -1,17 +1,18 @@
-import ecs = require('@aws-cdk/aws-ecs');
+// import ecs = require('@aws-cdk/aws-ecs');
 import ec2 = require('@aws-cdk/aws-ec2');
 import cdk = require('@aws-cdk/core');
-import { NetworkLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2';
-import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
-import { LogGroup } from '@aws-cdk/aws-logs';
-import { SecurityGroup } from '@aws-cdk/aws-ec2';
+// import { NetworkLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2';
+// import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
+// import { LogGroup } from '@aws-cdk/aws-logs';
+// import { SecurityGroup } from '@aws-cdk/aws-ec2';
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
     //1. Create VPC
-    var vpc;
-    vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 2 });
+//     var vpc;
+//     vpc = 
+      new ec2.Vpc(this, 'Vpc', { maxAzs: 2 });
     
 //     //2. Creation of Execution Role for our task
 //     const execRole = new Role(this, 'search-api-exec-role', {
