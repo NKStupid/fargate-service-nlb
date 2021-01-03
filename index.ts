@@ -2,7 +2,7 @@
 import ec2 = require('@aws-cdk/aws-ec2');
 import cdk = require('@aws-cdk/core');
 // import { NetworkLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2';
-// import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
+import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 // import { LogGroup } from '@aws-cdk/aws-logs';
 // import { SecurityGroup } from '@aws-cdk/aws-ec2';
 class FargateServiceNLB extends cdk.Stack {
@@ -10,28 +10,27 @@ class FargateServiceNLB extends cdk.Stack {
     super(scope, id, props);
     
     //1. Create VPC
-//     var vpc;
-//     vpc = 
-      new ec2.Vpc(this, 'Vpc', { maxAzs: 2 });
+    var vpc;
+    vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 2 });
     
-//     //2. Creation of Execution Role for our task
-//     const execRole = new Role(this, 'search-api-exec-role', {
-//       roleName: 'social-api-role', assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com')
-//     })
-//     //3. Adding permissions to the above created role...basically giving permissions to ECR image and Cloudwatch logs
-//     execRole.addToPolicy(new PolicyStatement({
-//       actions: [
-//         "ecr:GetAuthorizationToken",
-//         "ecr:BatchCheckLayerAvailability",
-//         "ecr:GetDownloadUrlForLayer",
-//         "ecr:BatchGetImage",
-//         "logs:CreateLogStream",
-//         "logs:PutLogEvents"
-//       ], effect: Effect.ALLOW, resources: ["*"]
-//     }));
+    //2. Creation of Execution Role for our task
+    const execRole = new Role(this, 'wise-demo-ecs-tasks-role', {
+      roleName: 'wise-demo-ecs-tasks-role', assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com')
+    })
+    //3. Adding permissions to the above created role...basically giving permissions to ECR image and Cloudwatch logs
+    execRole.addToPolicy(new PolicyStatement({
+      actions: [
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ], effect: Effect.ALLOW, resources: ["*"]
+    }));
 
-//     //4. Create the ECS fargate cluster
-//     const cluster = new ecs.Cluster(this, 'social-api-cluster', { vpc, clusterName: "social-api-cluster" });
+    //4. Create the ECS fargate cluster
+    const cluster = new ecs.Cluster(this, 'wise-demo-cluster', { vpc, clusterName: "wise-demo-cluster" });
 
 //     //5. Create a task definition for our cluster to invoke a task
 //     const taskDef = new ecs.FargateTaskDefinition(this, "search-api-task", {
