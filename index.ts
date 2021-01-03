@@ -51,14 +51,14 @@ class FargateServiceNLB extends cdk.Stack {
 
     //7. Create container for the task definition from ECR image
     var container = taskDef.addContainer("wise-demo-container", {
-      image: ecs.ContainerImage.fromRegistry("526913279474.dkr.ecr.us-east-1.amazonaws.com/ecr-simplehttp:latest"),
+      image: ecs.ContainerImage.fromRegistry("nginx:latest"),
       logging:log
     })
 
     //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     container.addPortMappings({
-      containerPort: 8000,
-      hostPort: 8000,
+      containerPort: 80,
+      hostPort: 80,
       protocol: ecs.Protocol.TCP
     });
 
@@ -66,12 +66,12 @@ class FargateServiceNLB extends cdk.Stack {
     const lb = new NetworkLoadBalancer(this, 'wise-demo-nlb', {
       loadBalancerName: 'wise-demo-nlb',
       vpc,
-      internetFacing: false
+      internetFacing: true
     });
 
     //10. Add a listener on a particular port for the NLB
     const listener = lb.addListener('wise-demo-listener', {
-      port: 8000,
+      port: 80,
     });
 
     //11. Create your own security Group using VPC
@@ -97,7 +97,7 @@ class FargateServiceNLB extends cdk.Stack {
     //14. Add fargate service to the listener 
     listener.addTargets('wise-demo-tg', {
       targetGroupName: 'wise-demo-tg',
-      port: 8000,
+      port: 80,
       targets: [fargateService],
       deregistrationDelay: cdk.Duration.seconds(300)
     });
