@@ -102,12 +102,12 @@ class FargateServiceNLB extends cdk.Stack {
 //       deregistrationDelay: cdk.Duration.seconds(300)
 //     });
 
-    new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
+//     new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
   }
 }
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'search-api-service');
+new FargateServiceNLB(app, 'wise-demo-fargate-nlb');
 
 app.synth();
