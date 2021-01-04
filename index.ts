@@ -11,7 +11,7 @@ class FargateServiceNLB extends cdk.Stack {
     
     //1. Create VPC
     var vpc;
-    vpc = ec2.Vpc.fromLookup(this, 'Vpc', { vpcId: 'vpc-0cf9d5073f62add15' })
+    vpc = ec2.Vpc.fromLookup(this, 'Vpc', { vpcId: 'vpc-089bfe332db6df261' })
 //     vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 2 });
     
     
