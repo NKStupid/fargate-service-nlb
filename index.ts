@@ -17,8 +17,8 @@ class FargateServiceNLB extends cdk.Stack {
     
     
     //2. Creation of Execution Role for our task
-    const execRole = new Role(this, 'wise-proto-exec-role', {
-      roleName: 'wise-proto-role', assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com')
+    const execRole = new Role(this, 'wise-dev-exec-role', {
+      roleName: 'wise-dev-role', assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com')
     })
     //3. Adding permissions to the above created role...basically giving permissions to ECR image and Cloudwatch logs
     execRole.addToPolicy(new PolicyStatement({
@@ -28,11 +28,11 @@ class FargateServiceNLB extends cdk.Stack {
     }));
 
     //4. Create the ECS fargate cluster
-    const cluster = new ecs.Cluster(this, 'wise-proto-cluster', { vpc, clusterName: "wise-proto-cluster" });
+    const cluster = new ecs.Cluster(this, 'wise-dev-cluster', { vpc, clusterName: "wise-dev-cluster" });
 
     //5. Create a task definition for our cluster to invoke a task
-    const taskDef = new ecs.FargateTaskDefinition(this, "wise-proto-task", {
-      family: 'wise-proto-task',
+    const taskDef = new ecs.FargateTaskDefinition(this, "wise-dev-task", {
+      family: 'wise-dev-task',
       memoryLimitMiB: 512,
       cpu: 256,
       executionRole: execRole,
@@ -48,33 +48,33 @@ class FargateServiceNLB extends cdk.Stack {
 //     })
 
     //7. Create container for the task definition from ECR image
-    var container = taskDef.addContainer("wise-proto-container", {
+    var container = taskDef.addContainer("wise-dev-container", {
       image: ecs.ContainerImage.fromRegistry("suizhidaidev/web-test"),
 //       logging:log
     })
 
-    //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
+    //8. Add port mappings to your container...Make sure you use TCP devcol for Network Load Balancer (NLB)
     container.addPortMappings({
       containerPort: 8000,
       hostPort: 8000,
-      protocol: ecs.Protocol.TCP
+      devcol: ecs.Protocol.TCP
     });
 
     //9. Create the NLB using the above VPC.
-    const lb = new NetworkLoadBalancer(this, 'wise-proto-nlb', {
-      loadBalancerName: 'wise-proto-nlb',
+    const lb = new NetworkLoadBalancer(this, 'wise-dev-nlb', {
+      loadBalancerName: 'wise-dev-nlb',
       vpc,
       internetFacing: true
     });
 
     //10. Add a listener on a particular port for the NLB
-    const listener = lb.addListener('wise-proto-listener', {
+    const listener = lb.addListener('wise-dev-listener', {
       port: 80,
     });
 
     //11. Create your own security Group using VPC
-    const secGroup = new SecurityGroup(this, 'wise-proto-sg', {
-      securityGroupName: "wise-proto-sg",
+    const secGroup = new SecurityGroup(this, 'wise-dev-sg', {
+      securityGroupName: "wise-dev-sg",
       vpc:vpc,
       allowAllOutbound:true
     });
@@ -84,17 +84,17 @@ class FargateServiceNLB extends cdk.Stack {
     secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(8000), 'Container exposed 8000 port');
 
     //13. Create Fargate Service from cluster, task definition and the security group
-    const fargateService = new ecs.FargateService(this, 'wise-proto-fg-service', {
+    const fargateService = new ecs.FargateService(this, 'wise-dev-fg-service', {
       cluster,
       taskDefinition: taskDef, 
       assignPublicIp: true, 
-      serviceName: "wise-proto-svc",
+      serviceName: "wise-dev-svc",
       securityGroup:secGroup
     });
 
     //14. Add fargate service to the listener 
-    listener.addTargets('wise-proto-tg', {
-      targetGroupName: 'wise-proto-tg',
+    listener.addTargets('wise-dev-tg', {
+      targetGroupName: 'wise-dev-tg',
       port: 8000,
       targets: [fargateService],
       deregistrationDelay: cdk.Duration.seconds(300)
@@ -113,6 +113,6 @@ const devEnv = {
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-proto', { env: devEnv });
+new FargateServiceNLB(app, 'wise-dev', { env: devEnv });
 
 app.synth();
