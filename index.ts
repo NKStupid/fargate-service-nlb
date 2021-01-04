@@ -112,7 +112,7 @@ const devEnv = {
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-demo', { env: devEnv });
+new FargateServiceNLB(app, 'wise-demo-2', { env: devEnv });
 
 
 // new FargateServiceNLB(app, 'wise-demo');
