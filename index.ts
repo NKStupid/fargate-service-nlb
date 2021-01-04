@@ -20,12 +20,7 @@ class FargateServiceNLB extends cdk.Stack {
     //3. Adding permissions to the above created role...basically giving permissions to ECR image and Cloudwatch logs
     execRole.addToPolicy(new PolicyStatement({
       actions: [
-        "ecr:GetAuthorizationToken",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
+        "*"
       ], effect: Effect.ALLOW, resources: ["*"]
     }));
 
@@ -51,14 +46,14 @@ class FargateServiceNLB extends cdk.Stack {
 
     //7. Create container for the task definition from ECR image
     var container = taskDef.addContainer("search-api-container", {
-      image: ecs.ContainerImage.fromRegistry("487213271675.dkr.ecr.us-west-2.amazonaws.com/search-api:latest"),
+      image: ecs.ContainerImage.fromRegistry("nginx:latest"),
       logging:log
     })
 
     //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     container.addPortMappings({
-      containerPort: 7070,
-      hostPort: 7070,
+      containerPort: 80,
+      hostPort: 80,
       protocol: ecs.Protocol.TCP
     });
 
@@ -71,7 +66,7 @@ class FargateServiceNLB extends cdk.Stack {
 
     //10. Add a listener on a particular port for the NLB
     const listener = lb.addListener('search-api-listener', {
-      port: 7070,
+      port: 80,
     });
 
     //11. Create your own security Group using VPC
@@ -97,7 +92,7 @@ class FargateServiceNLB extends cdk.Stack {
     //14. Add fargate service to the listener 
     listener.addTargets('search-api-tg', {
       targetGroupName: 'search-api-tg',
-      port: 7070,
+      port: 80,
       targets: [fargateService],
       deregistrationDelay: cdk.Duration.seconds(300)
     });
@@ -108,6 +103,6 @@ class FargateServiceNLB extends cdk.Stack {
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'search-api-service');
+new FargateServiceNLB(app, 'wise-demo');
 
 app.synth();
