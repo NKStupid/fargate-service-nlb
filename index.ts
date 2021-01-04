@@ -57,7 +57,7 @@ class FargateServiceNLB extends cdk.Stack {
     container.addPortMappings({
       containerPort: 8000,
       hostPort: 8000,
-      devcol: ecs.Protocol.TCP
+      protocol: ecs.Protocol.TCP
     });
 
     //9. Create the NLB using the above VPC.
