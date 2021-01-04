@@ -5,6 +5,8 @@ import { NetworkLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2';
 import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 // import { LogGroup } from '@aws-cdk/aws-logs';
 import { SecurityGroup } from '@aws-cdk/aws-ec2';
+import ecs_patterns = require('@aws-cdk/aws-ecs-patterns');
+
 
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -98,6 +100,15 @@ class FargateServiceNLB extends cdk.Stack {
       port: 8000,
       targets: [fargateService],
       deregistrationDelay: cdk.Duration.seconds(300)
+    });
+    
+    
+     // Instantiate Fargate Service with just cluster and image
+    new ecs_patterns.ApplicationLoadBalancedFargateService(this, "FargateService", {
+      cluster,
+      taskImageOptions: {
+        image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
+      },
     });
 
     new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
