@@ -104,8 +104,16 @@ class FargateServiceNLB extends cdk.Stack {
   }
 }
 
+const devEnv = {
+  account: process.env.CDK_DEFAULT_ACCOUNT,
+  region: process.env.CDK_DEFAULT_REGION,
+};
+
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-demo');
+new FargateServiceNLB(app, 'wise-demo', { env: devEnv });
+
+
+// new FargateServiceNLB(app, 'wise-demo');
 
 app.synth();
