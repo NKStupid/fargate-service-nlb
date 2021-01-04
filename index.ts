@@ -39,12 +39,12 @@ class FargateServiceNLB extends cdk.Stack {
     });
 
     //6. Create log group for our task to put logs
-    const lg = LogGroup.fromLogGroupName(this, 'search-api-log-group',  '/ecs/search-api-task');
-    const log = new ecs.AwsLogDriver({
-      logGroup : lg? lg : new LogGroup(this, 'search-api-log-group',{logGroupName:'/ecs/search-api-task'
-      }),
-      streamPrefix : 'ecs'
-    })
+//     const lg = LogGroup.fromLogGroupName(this, 'search-api-log-group',  '/ecs/search-api-task');
+//     const log = new ecs.AwsLogDriver({
+//       logGroup : lg? lg : new LogGroup(this, 'search-api-log-group',{logGroupName:'/ecs/search-api-task'
+//       }),
+//       streamPrefix : 'ecs'
+//     })
 
     //7. Create container for the task definition from ECR image
     var container = taskDef.addContainer("search-api-container", {
