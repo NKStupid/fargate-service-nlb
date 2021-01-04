@@ -9,9 +9,11 @@ class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-//     //1. Create VPC
-//     var vpc;
+    //1. Create VPC
+    var vpc;
+    vpc = ec2.Vpc.fromLookup(scope, 'Vpc', { vpcId: 'vpc-0cf9d5073f62add15' })
 //     vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 2 });
+    
     
     //2. Creation of Execution Role for our task
     const execRole = new Role(this, 'search-api-exec-role', {
@@ -24,8 +26,8 @@ class FargateServiceNLB extends cdk.Stack {
       ], effect: Effect.ALLOW, resources: ["*"]
     }));
 
-//     //4. Create the ECS fargate cluster
-//     const cluster = new ecs.Cluster(this, 'social-api-cluster', { vpc, clusterName: "social-api-cluster" });
+    //4. Create the ECS fargate cluster
+    const cluster = new ecs.Cluster(this, 'social-api-cluster', { vpc, clusterName: "social-api-cluster" });
 
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "search-api-task", {
