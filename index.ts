@@ -28,7 +28,8 @@ class FargateServiceNLB extends cdk.Stack {
 //     const cluster = new ecs.Cluster(this, 'social-api-cluster', { vpc, clusterName: "social-api-cluster" });
 
     //5. Create a task definition for our cluster to invoke a task
-    const taskDef = new ecs.FargateTaskDefinition(this, "search-api-task", {
+//     const taskDef = 
+    new ecs.FargateTaskDefinition(this, "search-api-task", {
 //       family: 'search-api-task',
       memoryLimitMiB: 512,
       cpu: 256,
