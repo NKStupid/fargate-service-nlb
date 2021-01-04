@@ -72,25 +72,25 @@ class FargateServiceNLB extends cdk.Stack {
 //       port: 80,
 //     });
 
-//     //11. Create your own security Group using VPC
-//     const secGroup = new SecurityGroup(this, 'search-api-sg', {
-//       securityGroupName: "search-sg",
-//       vpc:vpc,
-//       allowAllOutbound:true
-//     });
+    //11. Create your own security Group using VPC
+    const secGroup = new SecurityGroup(this, 'search-api-sg', {
+      securityGroupName: "search-sg",
+      vpc:vpc,
+      allowAllOutbound:true
+    });
 
-//     //12. Add IngressRule to access the docker image on 80 and 7070 ports 
-//     secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(80), 'SSH frm anywhere');
-//     secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(7070), '');
+    //12. Add IngressRule to access the docker image on 80 and 7070 ports 
+    secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(80), 'SSH frm anywhere');
+    secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(7070), '');
 
-//     //13. Create Fargate Service from cluster, task definition and the security group
-//     const fargateService = new ecs.FargateService(this, 'search-api-fg-service', {
-//       cluster,
-//       taskDefinition: taskDef, 
-//       assignPublicIp: true, 
-//       serviceName: "search-api-svc",
-//       securityGroup:secGroup
-//     });
+    //13. Create Fargate Service from cluster, task definition and the security group
+    const fargateService = new ecs.FargateService(this, 'search-api-fg-service', {
+      cluster,
+      taskDefinition: taskDef, 
+      assignPublicIp: true, 
+      serviceName: "search-api-svc",
+      securityGroup:secGroup
+    });
 
 //     //14. Add fargate service to the listener 
 //     listener.addTargets('search-api-tg', {
@@ -100,7 +100,9 @@ class FargateServiceNLB extends cdk.Stack {
 //       deregistrationDelay: cdk.Duration.seconds(300)
 //     });
 
-//     new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
+    new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
+    new cdk.CfnOutput(this, 'serviceName: ', { value: fargateService.serviceName });
+
   }
 }
 
