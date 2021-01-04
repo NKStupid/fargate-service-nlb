@@ -102,8 +102,8 @@ class FargateServiceNLB extends cdk.Stack {
       deregistrationDelay: cdk.Duration.seconds(300)
     });
     
-    
-     // Instantiate Fargate Service with just cluster and image
+    // 15. Create Frontend Service
+    // Instantiate Fargate Service with just cluster and image
     new ecs_patterns.ApplicationLoadBalancedFargateService(this, "FargateService", {
       cluster,
       taskImageOptions: {
