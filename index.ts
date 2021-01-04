@@ -56,20 +56,20 @@ class FargateServiceNLB extends cdk.Stack {
     container.addPortMappings({
       containerPort: 80,
       hostPort: 80,
-//       protocol: ecs.Protocol.TCP
+      protocol: ecs.Protocol.TCP
     });
 
-//     //9. Create the NLB using the above VPC.
-//     const lb = new NetworkLoadBalancer(this, 'search-api-nlb', {
-//       loadBalancerName: 'search-api-nlb',
-//       vpc,
-//       internetFacing: false
-//     });
+    //9. Create the NLB using the above VPC.
+    const lb = new NetworkLoadBalancer(this, 'search-api-nlb', {
+      loadBalancerName: 'search-api-nlb',
+      vpc,
+      internetFacing: false
+    });
 
-//     //10. Add a listener on a particular port for the NLB
-//     const listener = lb.addListener('search-api-listener', {
-//       port: 80,
-//     });
+    //10. Add a listener on a particular port for the NLB
+    const listener = lb.addListener('search-api-listener', {
+      port: 80,
+    });
 
     //11. Create your own security Group using VPC
     const secGroup = new SecurityGroup(this, 'search-api-sg', {
@@ -91,13 +91,13 @@ class FargateServiceNLB extends cdk.Stack {
       securityGroup:secGroup
     });
 
-//     //14. Add fargate service to the listener 
-//     listener.addTargets('search-api-tg', {
-//       targetGroupName: 'search-api-tg',
-//       port: 80,
-//       targets: [fargateService],
-//       deregistrationDelay: cdk.Duration.seconds(300)
-//     });
+    //14. Add fargate service to the listener 
+    listener.addTargets('search-api-tg', {
+      targetGroupName: 'search-api-tg',
+      port: 80,
+      targets: [fargateService],
+      deregistrationDelay: cdk.Duration.seconds(300)
+    });
 
     new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
     new cdk.CfnOutput(this, 'serviceName: ', { value: fargateService.serviceName });
