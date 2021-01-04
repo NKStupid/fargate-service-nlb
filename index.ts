@@ -1,10 +1,11 @@
 import ecs = require('@aws-cdk/aws-ecs');
 import ec2 = require('@aws-cdk/aws-ec2');
 import cdk = require('@aws-cdk/core');
-// import { NetworkLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2';
+import { NetworkLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2';
 import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 // import { LogGroup } from '@aws-cdk/aws-logs';
 import { SecurityGroup } from '@aws-cdk/aws-ec2';
+
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
