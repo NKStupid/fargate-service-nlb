@@ -49,14 +49,14 @@ class FargateServiceNLB extends cdk.Stack {
 
     //7. Create container for the task definition from ECR image
     var container = taskDef.addContainer("wise-proto-container", {
-      image: ecs.ContainerImage.fromRegistry("nginx:latest"),
+      image: ecs.ContainerImage.fromRegistry("suizhidaidev/web-test"),
 //       logging:log
     })
 
     //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     container.addPortMappings({
-      containerPort: 80,
-      hostPort: 80,
+      containerPort: 8000,
+      hostPort: 8000,
       protocol: ecs.Protocol.TCP
     });
 
@@ -81,7 +81,7 @@ class FargateServiceNLB extends cdk.Stack {
 
     //12. Add IngressRule to access the docker image on 80 and 7070 ports 
     secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(80), 'SSH frm anywhere');
-    secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(7070), '');
+    secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(8000), 'Container exposed 8000 port');
 
     //13. Create Fargate Service from cluster, task definition and the security group
     const fargateService = new ecs.FargateService(this, 'wise-proto-fg-service', {
@@ -95,7 +95,7 @@ class FargateServiceNLB extends cdk.Stack {
     //14. Add fargate service to the listener 
     listener.addTargets('wise-proto-tg', {
       targetGroupName: 'wise-proto-tg',
-      port: 80,
+      port: 8000,
       targets: [fargateService],
       deregistrationDelay: cdk.Duration.seconds(300)
     });
