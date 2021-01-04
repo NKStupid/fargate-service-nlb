@@ -49,14 +49,14 @@ class FargateServiceNLB extends cdk.Stack {
     //7. Create container for the task definition from ECR image
     var container = taskDef.addContainer("search-api-container", {
       image: ecs.ContainerImage.fromRegistry("nginx:latest"),
-      logging:log
+//       logging:log
     })
 
     //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     container.addPortMappings({
       containerPort: 80,
       hostPort: 80,
-      protocol: ecs.Protocol.TCP
+//       protocol: ecs.Protocol.TCP
     });
 
 //     //9. Create the NLB using the above VPC.
