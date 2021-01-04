@@ -4,7 +4,7 @@ import cdk = require('@aws-cdk/core');
 // import { NetworkLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2';
 import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 import { LogGroup } from '@aws-cdk/aws-logs';
-// import { SecurityGroup } from '@aws-cdk/aws-ec2';
+import { SecurityGroup } from '@aws-cdk/aws-ec2';
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -27,8 +27,7 @@ class FargateServiceNLB extends cdk.Stack {
     }));
 
     //4. Create the ECS fargate cluster
-//     const cluster = 
-          new ecs.Cluster(this, 'social-api-cluster', { vpc, clusterName: "social-api-cluster" });
+    const cluster = new ecs.Cluster(this, 'social-api-cluster', { vpc, clusterName: "social-api-cluster" });
 
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "search-api-task", {
