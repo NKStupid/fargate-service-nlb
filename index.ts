@@ -14,7 +14,7 @@ class FargateServiceNLB extends cdk.Stack {
     
     //1. Create VPC
     var vpc;
-    vpc = ec2.Vpc.fromLookup(this, 'Vpc', { vpcId: 'vpc-07b908190a12b9647' })
+    vpc = ec2.Vpc.fromLookup(this, 'Vpc', { vpcId: 'vpc-014132662ab2fe33c' })
 //     vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 2 });
     
     
@@ -33,8 +33,8 @@ class FargateServiceNLB extends cdk.Stack {
     const cluster = new ecs.Cluster(this, 'wise-proto-cluster', { vpc, clusterName: "wise-proto-cluster" });
 
     //5. Create a task definition for our cluster to invoke a task
-    const taskDef = new ecs.FargateTaskDefinition(this, "wise-proto-task", {
-      family: 'wise-proto-task',
+    const taskDefBack = new ecs.FargateTaskDefinition(this, "wise-proto-back-task", {
+      family: 'wise-proto-back-task',
       memoryLimitMiB: 512,
       cpu: 256,
       executionRole: execRole,
@@ -50,27 +50,27 @@ class FargateServiceNLB extends cdk.Stack {
 //     })
 
     //7. Create container for the task definition from ECR image
-    var container = taskDef.addContainer("wise-proto-container", {
+    var containerBack = taskDefBack.addContainer("wise-proto-back-container", {
       image: ecs.ContainerImage.fromRegistry("suizhidaidev/web-test"),
 //       logging:log
     })
 
     //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
-    container.addPortMappings({
+    containerBack.addPortMappings({
       containerPort: 8000,
       hostPort: 8000,
       protocol: ecs.Protocol.TCP
     });
 
     //9. Create the NLB using the above VPC.
-    const lb = new NetworkLoadBalancer(this, 'wise-proto-nlb', {
-      loadBalancerName: 'wise-proto-nlb',
+    const lbBack = new NetworkLoadBalancer(this, 'wise-proto-back-nlb', {
+      loadBalancerName: 'wise-proto-back-nlb',
       vpc,
       internetFacing: true
     });
 
     //10. Add a listener on a particular port for the NLB
-    const listener = lb.addListener('wise-proto-listener', {
+    const listenerBack = lbBack.addListener('wise-proto-back-listener', {
       port: 80,
     });
 
@@ -84,32 +84,33 @@ class FargateServiceNLB extends cdk.Stack {
     //12. Add IngressRule to access the docker image on 80 and 7070 ports 
     secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(80), 'SSH frm anywhere');
     secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(8000), 'Container exposed 8000 port');
+    secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(8080), 'Container exposed 8080 port');
 
     //13. Create Fargate Service from cluster, task definition and the security group
-    const fargateService = new ecs.FargateService(this, 'wise-proto-fg-service', {
+    const fargateServiceBack = new ecs.FargateService(this, 'wise-proto-back-fg-service', {
       cluster,
-      taskDefinition: taskDef, 
+      taskDefinition: taskDefBack, 
       assignPublicIp: true, 
-      serviceName: "wise-proto-svc",
+      serviceName: "wise-proto-back-svc",
       securityGroup:secGroup
     });
 
     //14. Add fargate service to the listener 
-    listener.addTargets('wise-proto-tg', {
-      targetGroupName: 'wise-proto-tg',
+    listenerBack.addTargets('wise-proto-back-tg', {
+      targetGroupName: 'wise-proto-back-tg',
       port: 8000,
-      targets: [fargateService],
+      targets: [fargateServiceBack],
       deregistrationDelay: cdk.Duration.seconds(300)
     });
     
-    // 15. Create Frontend Service
-    // Instantiate Fargate Service with just cluster and image
-    new ecs_patterns.ApplicationLoadBalancedFargateService(this, "FargateService", {
-      cluster,
-      taskImageOptions: {
-        image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
-      },
-    });
+//     // 15. Create Frontend Service
+//     // Instantiate Fargate Service with just cluster and image
+//     new ecs_patterns.ApplicationLoadBalancedFargateService(this, "FargateService", {
+//       cluster,
+//       taskImageOptions: {
+//         image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
+//       },
+//     });
 
     new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
     new cdk.CfnOutput(this, 'serviceName: ', { value: fargateService.serviceName });
