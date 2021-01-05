@@ -111,7 +111,58 @@ class FargateServiceNLB extends cdk.Stack {
 //         image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
 //       },
 //     });
+    
+    
+    //16. (Frontend) --- Create a task definition for our cluster to invoke a task
+    const taskDefFront = new ecs.FargateTaskDefinition(this, "wise-proto-front-task", {
+      family: 'wise-proto-front-task',
+      memoryLimitMiB: 512,
+      cpu: 256,
+      executionRole: execRole,
+      taskRole: execRole
+    });
+    
+     //17. (Frontend) --- Create container for the task definition from ECR image
+    var containerFront = taskDefFront.addContainer("wise-proto-front-container", {
+      image: ecs.ContainerImage.fromRegistry("suizhidaidev/web-front"),
+    })
 
+    //18. (Frontend) --- Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
+    containerFront.addPortMappings({
+      containerPort: 8080,
+      hostPort: 8080,
+      protocol: ecs.Protocol.TCP
+    });
+
+    //19. (Frontend) --- Create the NLB using the above VPC.
+    const lbFront = new NetworkLoadBalancer(this, 'wise-proto-front-nlb', {
+      loadBalancerName: 'wise-proto-front-nlb',
+      vpc,
+      internetFacing: true
+    });
+
+    //20. (Frontend) --- Add a listener on a particular port for the NLB
+    const listenerFront = lbFront.addListener('wise-proto-front-listener', {
+      port: 80,
+    });    
+    
+    //21. (Frontend) --- Create Fargate Service from cluster, task definition and the security group
+    const fargateServiceFront = new ecs.FargateService(this, 'wise-proto-front-fg-service', {
+      cluster,
+      taskDefinition: taskDefFront, 
+      assignPublicIp: true, 
+      serviceName: "wise-proto-front-svc",
+      securityGroup:secGroup
+    });
+
+    //22. (Frontend) --- Add fargate service to the listener 
+    listenerFront.addTargets('wise-proto-front-tg', {
+      targetGroupName: 'wise-proto-front-tg',
+      port: 8080,
+      targets: [fargateServiceBack],
+      deregistrationDelay: cdk.Duration.seconds(300)
+    });
+    
     new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
     new cdk.CfnOutput(this, 'serviceName: ', { value: fargateServiceBack.serviceName });
 
