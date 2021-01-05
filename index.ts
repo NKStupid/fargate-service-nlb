@@ -113,7 +113,7 @@ class FargateServiceNLB extends cdk.Stack {
 //     });
 
     new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
-    new cdk.CfnOutput(this, 'serviceName: ', { value: fargateService.serviceName });
+    new cdk.CfnOutput(this, 'serviceName: ', { value: fargateServiceBack.serviceName });
 
   }
 }
