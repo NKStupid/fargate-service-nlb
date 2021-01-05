@@ -159,12 +159,13 @@ class FargateServiceNLB extends cdk.Stack {
     listenerFront.addTargets('wise-proto-front-tg', {
       targetGroupName: 'wise-proto-front-tg',
       port: 8080,
-      targets: [fargateServiceBack],
+      targets: [fargateServiceFront],
       deregistrationDelay: cdk.Duration.seconds(300)
     });
     
     new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
     new cdk.CfnOutput(this, 'serviceName: ', { value: fargateServiceBack.serviceName });
+    new cdk.CfnOutput(this, 'serviceName: ', { value: fargateServiceFront.serviceName });
 
   }
 }
