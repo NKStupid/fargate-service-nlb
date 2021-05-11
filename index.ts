@@ -15,7 +15,7 @@ class FargateServiceNLB extends cdk.Stack {
     //2. IAM role
     const execRole = iam.Role.fromRoleArn(this, 'Role', 'arn:aws:iam::278772998776:role/ecs-task-test');
     //3. securityGroup
-    const securityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'securitygroup', 'sg-04af45e8e65cfec83');
+    const securityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'securitygroup', 'sg-03d8d9334085f039a');
     //4. Create the ECS fargate cluster
     const cluster = new ecs.Cluster(this, 'cluster-wise-dev-ap', { vpc, clusterName: "cluster-wise-dev-ap" });
 //     const cluster = ecs.Cluster.fromClusterAttributes(this, "cluster-wise-dev-ap",
