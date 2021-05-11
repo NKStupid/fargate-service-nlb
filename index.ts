@@ -1,6 +1,6 @@
 import ecs = require('@aws-cdk/aws-ecs');
 import cdk = require('@aws-cdk/core');
-import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
+// import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 
 
@@ -8,24 +8,24 @@ class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-    //2. Creation of Execution Role for our task
-    const execRole = new Role(this, 'search-api-exec-role', {
-      roleName: 'social-api-role', assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com')
-    })
-    //3. Adding permissions to the above created role...basically giving permissions to ECR image and Cloudwatch logs
-    execRole.addToPolicy(new PolicyStatement({
-      actions: [
-        "*"
-      ], effect: Effect.ALLOW, resources: ["*"]
-    }));
+//     //2. Creation of Execution Role for our task
+//     const execRole = new Role(this, 'search-api-exec-role', {
+//       roleName: 'social-api-role', assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com')
+//     })
+//     //3. Adding permissions to the above created role...basically giving permissions to ECR image and Cloudwatch logs
+//     execRole.addToPolicy(new PolicyStatement({
+//       actions: [
+//         "*"
+//       ], effect: Effect.ALLOW, resources: ["*"]
+//     }));
     
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
       family: 'task-wise-dev-ap-spring-master',
       memoryLimitMiB: 512,
       cpu: 256,
-      executionRole: execRole,
-      taskRole: execRole
+      executionRole: "arn:aws:iam::278772998776:role/ecs-task-test",
+      taskRole: "arn:aws:iam::278772998776:role/ecs-task-test"
     });
     
     const mySecretArn = cdk.Stack.of(this).formatArn({
