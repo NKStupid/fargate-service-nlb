@@ -1,7 +1,7 @@
 import ecs = require('@aws-cdk/aws-ecs');
 import cdk = require('@aws-cdk/core');
 import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
-// import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
+import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 
 
 class FargateServiceNLB extends cdk.Stack {
@@ -35,14 +35,14 @@ class FargateServiceNLB extends cdk.Stack {
       environment: {
         "REDIS_HOST": "ARN"
       }
-//       secrets: {
-//         // Assign a JSON value from the secret to a environment variable
-//         MYSQL_HOST: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'host'),
-//         MYSQL_PORT: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'port'),
-//         MYSQL_USER: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'username'),
-//         MYSQL_PASSWORD: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'password'),
-//         MYSQL_DATABASE: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'dbname'),
-//       }
+      secrets: {
+        // Assign a JSON value from the secret to a environment variable
+        MYSQL_HOST: secretsmanager.Secret.fromSecretsManager("ARN", 'host'),
+        MYSQL_PORT: secretsmanager.Secret.fromSecretsManager("ARN", 'port'),
+        MYSQL_USER: secretsmanager.Secret.fromSecretsManager("ARN", 'username'),
+        MYSQL_PASSWORD: secretsmanager.Secret.fromSecretsManager("ARN", 'password'),
+        MYSQL_DATABASE: secretsmanager.Secret.fromSecretsManager("ARN", 'dbname'),
+      }
     }).addPortMappings({containerPort: 80}); //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     
     taskDef.addContainer("container-wise-dev-ap-spring-master-log", {
