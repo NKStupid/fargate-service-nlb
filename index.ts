@@ -29,7 +29,7 @@ class FargateServiceNLB extends cdk.Stack {
 
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "search-api-task", {
-//       family: 'search-api-task',
+      family: 'task-wise-dev-ap-spring-master',
       memoryLimitMiB: 512,
       cpu: 256,
       executionRole: execRole,
