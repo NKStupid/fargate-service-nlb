@@ -73,7 +73,8 @@ class FargateServiceNLB extends cdk.Stack {
       taskDefinition: taskDef, 
       assignPublicIp: true, 
       serviceName: "service-wise-dev-ap-spring-master",
-      securityGroup:securityGroup
+      securityGroup:securityGroup,
+      desiredCount: 0
     });
 
 //     //14. Add fargate service to the listener 
