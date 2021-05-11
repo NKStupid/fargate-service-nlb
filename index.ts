@@ -1,7 +1,7 @@
 import ecs = require('@aws-cdk/aws-ecs');
 import cdk = require('@aws-cdk/core');
 import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
-// import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
+import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 
 
 class FargateServiceNLB extends cdk.Stack {
@@ -27,21 +27,32 @@ class FargateServiceNLB extends cdk.Stack {
       executionRole: execRole,
       taskRole: execRole
     });
+    
+    const mySecretArn = Stack.of(this).formatArn({
+      service: 'secretsmanager',
+      resource: 'secret',
+      resourceName: `${appSecretBase}/MySecret`,
+      sep: ':',
+    });
+    const mySecret = secretsmanager.Secret.fromSecretArn(this, 'mysecret', mySecretArn);
+    const mySecretEnv = ecs.Secret.fromSecretsManager(mySecret);
 
     //7. Create container for the task definition from ECR image
     taskDef.addContainer("container-wise-dev-ap-spring-master-spr", {
       image: ecs.ContainerImage.fromRegistry("nginx"),
       essential: true,
       environment: {
+        MYSQL_HOST: "ARN:host::",
+        MYSQL_PORT: "ARN:port::",
+        MYSQL_USER: "ARN:username::",
+        MYSQL_PASSWORD: "ARN:password::",
+        MYSQL_DATABASE: "ARN:dbname::",
         "REDIS_HOST": "ARN"
       },
       secrets: {
         // Assign a JSON value from the secret to a environment variable
-        MYSQL_HOST: ecs.Secret.fromSecretsManager("ARN:host::"),
-        MYSQL_PORT: ecs.Secret.fromSecretsManager("ARN:port::"),
-        MYSQL_USER: ecs.Secret.fromSecretsManager("ARN:username::"),
-        MYSQL_PASSWORD: ecs.Secret.fromSecretsManager("ARN:password::"),
-        MYSQL_DATABASE: ecs.Secret.fromSecretsManager("ARN:dbname::"),
+        MY_SECRET: mySecretEnv,
+
       }
     }).addPortMappings({containerPort: 80}); //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     
