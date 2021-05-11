@@ -18,11 +18,6 @@ class FargateServiceNLB extends cdk.Stack {
     const securityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'securitygroup', 'sg-03d8d9334085f039a');
     //4. Create the ECS fargate cluster
     const cluster = new ecs.Cluster(this, 'cluster-wise-dev-ap', { vpc, clusterName: "cluster-wise-dev-ap" });
-//     const cluster = ecs.Cluster.fromClusterAttributes(this, "cluster-wise-dev-ap",
-//           {
-//             securityGroup: [securityGroup],
-//             vpc
-//            });
                                               
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
