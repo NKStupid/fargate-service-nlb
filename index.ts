@@ -31,9 +31,13 @@ class FargateServiceNLB extends cdk.Stack {
       image: ecs.ContainerImage.fromRegistry("nginx"),
     }).addPortMappings({containerPort: 80}); //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     
-//     .addContainer("container-wise-dev-ap-spring-master-log", {
-//       image: ecs.ContainerImage.fromRegistry("nginx"),
-//     })
+    taskDef.addContainer("container-wise-dev-ap-spring-master-log", {
+      image: ecs.ContainerImage.fromRegistry("log"),
+    })
+    
+    taskDef.addContainer("container-wise-dev-ap-spring-master-xray", {
+      image: ecs.ContainerImage.fromRegistry("xray"),
+    })
 
     
 
