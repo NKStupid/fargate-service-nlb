@@ -1,6 +1,8 @@
 import ecs = require('@aws-cdk/aws-ecs');
 import cdk = require('@aws-cdk/core');
 import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
+import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
+
 
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -29,7 +31,18 @@ class FargateServiceNLB extends cdk.Stack {
     //7. Create container for the task definition from ECR image
     taskDef.addContainer("container-wise-dev-ap-spring-master-spr", {
       image: ecs.ContainerImage.fromRegistry("nginx"),
-      essential: true
+      essential: true,
+      environment: {
+        "REDIS_HOST": "ARN"
+      }
+//       secrets: {
+//         // Assign a JSON value from the secret to a environment variable
+//         MYSQL_HOST: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'host'),
+//         MYSQL_PORT: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'port'),
+//         MYSQL_USER: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'username'),
+//         MYSQL_PASSWORD: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'password'),
+//         MYSQL_DATABASE: secretsmanager.Secret.fromSecretsManager(cluster.secret!, 'dbname'),
+//       }
     }).addPortMappings({containerPort: 80}); //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     
     taskDef.addContainer("container-wise-dev-ap-spring-master-log", {
