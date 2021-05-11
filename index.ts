@@ -1,6 +1,7 @@
 import ecs = require('@aws-cdk/aws-ecs');
 import cdk = require('@aws-cdk/core');
 // import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
+import * as iam from '@aws-cdk/aws-iam';
 import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 
 
@@ -19,13 +20,15 @@ class FargateServiceNLB extends cdk.Stack {
 //       ], effect: Effect.ALLOW, resources: ["*"]
 //     }));
     
+    const execRole = iam.Role.fromRoleArn(this, 'Role', 'arn:aws:iam::278772998776:role/ecs-task-test');
+    
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
       family: 'task-wise-dev-ap-spring-master',
       memoryLimitMiB: 512,
       cpu: 256,
-      executionRole: "arn:aws:iam::278772998776:role/ecs-task-test",
-      taskRole: "arn:aws:iam::278772998776:role/ecs-task-test"
+      executionRole: execRole,
+      taskRole: execRole
     });
     
     const mySecretArn = cdk.Stack.of(this).formatArn({
