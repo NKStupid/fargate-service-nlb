@@ -9,17 +9,6 @@ class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-//     //2. Creation of Execution Role for our task
-//     const execRole = new Role(this, 'search-api-exec-role', {
-//       roleName: 'social-api-role', assumedBy: new ServicePrincipal('ecs-tasks.amazonaws.com')
-//     })
-//     //3. Adding permissions to the above created role...basically giving permissions to ECR image and Cloudwatch logs
-//     execRole.addToPolicy(new PolicyStatement({
-//       actions: [
-//         "*"
-//       ], effect: Effect.ALLOW, resources: ["*"]
-//     }));
-    
     const execRole = iam.Role.fromRoleArn(this, 'Role', 'arn:aws:iam::278772998776:role/ecs-task-test');
     
     //5. Create a task definition for our cluster to invoke a task
