@@ -15,7 +15,7 @@ class FargateServiceNLB extends cdk.Stack {
     //2. IAM role
     const execRole = iam.Role.fromRoleArn(this, 'Role', 'arn:aws:iam::278772998776:role/ecs-task-test');
     //4. Create the ECS fargate cluster
-    const cluster = new ecs.Cluster(this, 'cluster-wise-dev-ap', { vpc, clusterName: "cluster-wise-dev-ap" });
+    const cluster = new ecs.Cluster(this, 'cluster-wise-dev-ap', { getExistingVpc, clusterName: "cluster-wise-dev-ap" });
     
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
@@ -69,7 +69,7 @@ class FargateServiceNLB extends cdk.Stack {
 
 
     //13. Create Fargate Service from cluster, task definition and the security group
-    const fargateService = new ecs.FargateService(this, 'service-wise-dev-ap-spring-master', {
+    new ecs.FargateService(this, 'service-wise-dev-ap-spring-master', {
       cluster,
       taskDefinition: taskDef, 
       assignPublicIp: true, 
