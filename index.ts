@@ -1,17 +1,10 @@
 import ecs = require('@aws-cdk/aws-ecs');
-// import ec2 = require('@aws-cdk/aws-ec2');
 import cdk = require('@aws-cdk/core');
-// import { NetworkLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2';
 import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
-// import { LogGroup } from '@aws-cdk/aws-logs';
-// import { SecurityGroup } from '@aws-cdk/aws-ec2';
+
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-    
-//     //1. Create VPC
-//     var vpc;
-//     vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 2 });
     
     //2. Creation of Execution Role for our task
     const execRole = new Role(this, 'search-api-exec-role', {
@@ -23,10 +16,7 @@ class FargateServiceNLB extends cdk.Stack {
         "*"
       ], effect: Effect.ALLOW, resources: ["*"]
     }));
-
-//     //4. Create the ECS fargate cluster
-//     const cluster = new ecs.Cluster(this, 'social-api-cluster', { vpc, clusterName: "social-api-cluster" });
-
+    
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
       family: 'task-wise-dev-ap-spring-master',
@@ -35,14 +25,6 @@ class FargateServiceNLB extends cdk.Stack {
       executionRole: execRole,
       taskRole: execRole
     });
-
-    //6. Create log group for our task to put logs
-//     const lg = LogGroup.fromLogGroupName(this, 'search-api-log-group',  '/ecs/search-api-task');
-//     const log = new ecs.AwsLogDriver({
-//       logGroup : lg? lg : new LogGroup(this, 'search-api-log-group',{logGroupName:'/ecs/search-api-task'
-//       }),
-//       streamPrefix : 'ecs'
-//     })
 
     //7. Create container for the task definition from ECR image
     var appContainer = taskDef.addContainer("container-wise-dev-ap-spring-master-spr", {
@@ -56,29 +38,6 @@ class FargateServiceNLB extends cdk.Stack {
     appContainer.addPortMappings({
       containerPort: 80,
     });
-
-//     //9. Create the NLB using the above VPC.
-//     const lb = new NetworkLoadBalancer(this, 'search-api-nlb', {
-//       loadBalancerName: 'search-api-nlb',
-//       vpc,
-//       internetFacing: false
-//     });
-
-//     //10. Add a listener on a particular port for the NLB
-//     const listener = lb.addListener('search-api-listener', {
-//       port: 80,
-//     });
-
-//     //11. Create your own security Group using VPC
-//     const secGroup = new SecurityGroup(this, 'search-api-sg', {
-//       securityGroupName: "search-sg",
-//       vpc:vpc,
-//       allowAllOutbound:true
-//     });
-
-//     //12. Add IngressRule to access the docker image on 80 and 7070 ports 
-//     secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(80), 'SSH frm anywhere');
-//     secGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(7070), '');
 
 //     //13. Create Fargate Service from cluster, task definition and the security group
 //     const fargateService = new ecs.FargateService(this, 'search-api-fg-service', {
