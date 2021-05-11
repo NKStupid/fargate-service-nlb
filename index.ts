@@ -34,7 +34,7 @@ class FargateServiceNLB extends cdk.Stack {
       essential: true,
       environment: {
         "REDIS_HOST": "ARN"
-      }
+      },
       secrets: {
         // Assign a JSON value from the secret to a environment variable
         MYSQL_HOST: secretsmanager.Secret.fromSecretsManager("ARN", 'host'),
