@@ -11,12 +11,19 @@ class FargateServiceNLB extends cdk.Stack {
     super(scope, id, props);
     
     //1. VPC
-    const getExistingVpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
+    const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
     //2. IAM role
     const execRole = iam.Role.fromRoleArn(this, 'Role', 'arn:aws:iam::278772998776:role/ecs-task-test');
+    //3. securityGroup
+    const securityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'securitygroup', 'sg-04af45e8e65cfec83');
     //4. Create the ECS fargate cluster
     const cluster = new ecs.Cluster(this, 'cluster-wise-dev-ap', { getExistingVpc, clusterName: "cluster-wise-dev-ap" });
-    
+    const cluster = ecs.Cluster.fromClusterAttributes(this, "cluster-wise-dev-ap",
+          {
+            securityGroup,
+            vpc
+           });
+                                              
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
       family: 'task-wise-dev-ap-spring-master',
@@ -63,9 +70,6 @@ class FargateServiceNLB extends cdk.Stack {
       image: ecs.ContainerImage.fromRegistry("hello-world"),
       essential: false
     })
-
-    //12. securityGroup
-    const securityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'securitygroup', 'sg-04af45e8e65cfec83');
 
 
     //13. Create Fargate Service from cluster, task definition and the security group
