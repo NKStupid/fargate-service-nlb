@@ -31,7 +31,7 @@ class FargateServiceNLB extends cdk.Stack {
     const mySecretArn = cdk.Stack.of(this).formatArn({
       service: 'secretsmanager',
       resource: 'secret',
-      resourceName: "ARN/MySecret",
+      resourceName: "dev/appBeta/Mysql:password::",
       sep: ':',
     });
     const mySecret = secretsmanager.Secret.fromSecretArn(this, 'mysecret', mySecretArn);
@@ -41,17 +41,17 @@ class FargateServiceNLB extends cdk.Stack {
     taskDef.addContainer("container-wise-dev-ap-spring-master-spr", {
       image: ecs.ContainerImage.fromRegistry("nginx"),
       essential: true,
-      environment: {
-        "MYSQL_HOST": "ARN:host::",
-        "MYSQL_PORT": "ARN:port::",
-        "MYSQL_USER": "ARN:username::",
-        "MYSQL_PASSWORD": "ARN:password::",
-        "MYSQL_DATABASE": "ARN:dbname::",
-        "REDIS_HOST": "ARN"
-      },
+//       environment: {
+//         "MYSQL_HOST": "ARN:host::",
+//         "MYSQL_PORT": "ARN:port::",
+//         "MYSQL_USER": "ARN:username::",
+//         "MYSQL_PASSWORD": "ARN:password::",
+//         "MYSQL_DATABASE": "ARN:dbname::",
+//         "REDIS_HOST": "ARN"
+//       },
       secrets: {
         // Assign a JSON value from the secret to a environment variable
-        MY_SECRET: mySecretEnv,
+        MYSQL_PASSWORD: mySecretEnv,
 
       }
     }).addPortMappings({containerPort: 80}); //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
