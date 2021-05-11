@@ -37,11 +37,11 @@ class FargateServiceNLB extends cdk.Stack {
       },
       secrets: {
         // Assign a JSON value from the secret to a environment variable
-        MYSQL_HOST: ecs.Secret.fromSecretsManager("ARN", 'host'),
-        MYSQL_PORT: ecs.Secret.fromSecretsManager("ARN", 'port'),
-        MYSQL_USER: ecs.Secret.fromSecretsManager("ARN", 'username'),
-        MYSQL_PASSWORD: ecs.Secret.fromSecretsManager("ARN", 'password'),
-        MYSQL_DATABASE: ecs.Secret.fromSecretsManager("ARN", 'dbname'),
+        MYSQL_HOST: ecs.Secret.fromSecretsManager("ARN:host::"),
+        MYSQL_PORT: ecs.Secret.fromSecretsManager("ARN:port::"),
+        MYSQL_USER: ecs.Secret.fromSecretsManager("ARN:username::"),
+        MYSQL_PASSWORD: ecs.Secret.fromSecretsManager("ARN:password::"),
+        MYSQL_DATABASE: ecs.Secret.fromSecretsManager("ARN:dbname::"),
       }
     }).addPortMappings({containerPort: 80}); //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     
