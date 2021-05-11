@@ -42,11 +42,11 @@ class FargateServiceNLB extends cdk.Stack {
       image: ecs.ContainerImage.fromRegistry("nginx"),
       essential: true,
       environment: {
-        MYSQL_HOST: "ARN:host::",
-        MYSQL_PORT: "ARN:port::",
-        MYSQL_USER: "ARN:username::",
-        MYSQL_PASSWORD: "ARN:password::",
-        MYSQL_DATABASE: "ARN:dbname::",
+        "MYSQL_HOST": "ARN:host::",
+        "MYSQL_PORT": "ARN:port::",
+        "MYSQL_USER": "ARN:username::",
+        "MYSQL_PASSWORD": "ARN:password::",
+        "MYSQL_DATABASE": "ARN:dbname::",
         "REDIS_HOST": "ARN"
       },
       secrets: {
