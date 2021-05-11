@@ -31,7 +31,7 @@ class FargateServiceNLB extends cdk.Stack {
 
     //7. Create container for the task definition from ECR image
     taskDef.addContainer("container-wise-dev-ap-spring-master-spr", {
-      image: ecs.ContainerImage.fromRegistry("nginx"),
+      image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
       essential: true,
 //       environment: {
 //         "MYSQL_HOST": "ARN:host::",
@@ -49,12 +49,12 @@ class FargateServiceNLB extends cdk.Stack {
     }).addPortMappings({containerPort: 80}); //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     
     taskDef.addContainer("container-wise-dev-ap-spring-master-log", {
-      image: ecs.ContainerImage.fromRegistry("log"),
+      image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
       essential: false
     })
     
     taskDef.addContainer("container-wise-dev-ap-spring-master-xray", {
-      image: ecs.ContainerImage.fromRegistry("xray"),
+      image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
       essential: false
     })
 
