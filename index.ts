@@ -28,7 +28,7 @@ class FargateServiceNLB extends cdk.Stack {
 //     const cluster = new ecs.Cluster(this, 'social-api-cluster', { vpc, clusterName: "social-api-cluster" });
 
     //5. Create a task definition for our cluster to invoke a task
-    const taskDef = new ecs.FargateTaskDefinition(this, "search-api-task", {
+    const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
       family: 'task-wise-dev-ap-spring-master',
       memoryLimitMiB: 512,
       cpu: 256,
@@ -37,17 +37,20 @@ class FargateServiceNLB extends cdk.Stack {
     });
 
     //6. Create log group for our task to put logs
-    const lg = LogGroup.fromLogGroupName(this, 'search-api-log-group',  '/ecs/search-api-task');
-    const log = new ecs.AwsLogDriver({
-      logGroup : lg? lg : new LogGroup(this, 'search-api-log-group',{logGroupName:'/ecs/search-api-task'
-      }),
-      streamPrefix : 'ecs'
-    })
+//     const lg = LogGroup.fromLogGroupName(this, 'search-api-log-group',  '/ecs/search-api-task');
+//     const log = new ecs.AwsLogDriver({
+//       logGroup : lg? lg : new LogGroup(this, 'search-api-log-group',{logGroupName:'/ecs/search-api-task'
+//       }),
+//       streamPrefix : 'ecs'
+//     })
 
     //7. Create container for the task definition from ECR image
-    var container = taskDef.addContainer("search-api-container", {
+    var container = taskDef.addContainer("container-wise-dev-ap-spring-master-spr", {
       image: ecs.ContainerImage.fromRegistry("nginx"),
-      logging:log
+//       logging:log
+    }).addContainer("container-wise-dev-ap-spring-master-log", {
+      image: ecs.ContainerImage.fromRegistry("nginx"),
+//       logging:log
     })
 
     //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
