@@ -46,7 +46,7 @@ class FargateServiceNLB extends cdk.Stack {
 
     //7. Create container for the task definition from ECR image
     var container = taskDef.addContainer("search-api-container", {
-      image: ecs.ContainerImage.fromRegistry("nginx:latest"),
+      image: ecs.ContainerImage.fromRegistry("nginx"),
       logging:log
     })
 
