@@ -28,10 +28,10 @@ class FargateServiceNLB extends cdk.Stack {
       taskRole: execRole
     });
     
-    const mySecretArn = Stack.of(this).formatArn({
+    const mySecretArn = cdk.Stack.of(this).formatArn({
       service: 'secretsmanager',
       resource: 'secret',
-      resourceName: `${appSecretBase}/MySecret`,
+      resourceName: "ARN/MySecret",
       sep: ':',
     });
     const mySecret = secretsmanager.Secret.fromSecretArn(this, 'mysecret', mySecretArn);
