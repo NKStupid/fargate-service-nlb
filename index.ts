@@ -22,8 +22,8 @@ class FargateServiceNLB extends cdk.Stack {
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
       family: 'task-wise-dev-ap-spring-master-1',
-      memoryLimitMiB: 512,
-      cpu: 256,
+      memoryLimitMiB: 4096,
+      cpu: 2048,
       executionRole: execRole,
       taskRole: execRole
     });
@@ -41,14 +41,14 @@ class FargateServiceNLB extends cdk.Stack {
     taskDef.addContainer("container-wise-dev-ap-spring-master-spr", {
       image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
       essential: true,
-//       environment: {
-//         "MYSQL_HOST": "ARN:host::",
-//         "MYSQL_PORT": "ARN:port::",
-//         "MYSQL_USER": "ARN:username::",
-//         "MYSQL_PASSWORD": "ARN:password::",
-//         "MYSQL_DATABASE": "ARN:dbname::",
-//         "REDIS_HOST": "ARN"
-//       },
+      environment: {
+        "MYSQL_HOST": "ARN:host::",
+        "MYSQL_PORT": "ARN:port::",
+        "MYSQL_USER": "ARN:username::",
+        "MYSQL_PASSWORD": "ARN:password::",
+        "MYSQL_DATABASE": "ARN:dbname::",
+        "REDIS_HOST": "ARN"
+      },
 //       secrets: {
 //         // Assign a JSON value from the secret to a environment variable
 //         MYSQL_PASSWORD: mySecretEnv,
