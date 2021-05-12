@@ -9,7 +9,7 @@ import ec2 = require('@aws-cdk/aws-ec2');
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-    
+    // TEST
     //1. VPC
     const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
     //2. IAM role
