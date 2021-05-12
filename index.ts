@@ -11,31 +11,31 @@ class FargateServiceNLB extends cdk.Stack {
     super(scope, id, props);
     // TEST
     //1. VPC
-    const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
+//     const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
     //2. IAM role
     const execRole = iam.Role.fromRoleArn(this, 'Role', 'arn:aws:iam::278772998776:role/ecs-task-test');
     //3. securityGroup
-    const securityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'securitygroup', 'sg-03d8d9334085f039a');
+//     const securityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'securitygroup', 'sg-03d8d9334085f039a');
     //4. Create the ECS fargate cluster
-    const cluster = new ecs.Cluster(this, 'cluster-wise-dev-ap', { vpc, clusterName: "cluster-wise-dev-ap" });
+//     const cluster = new ecs.Cluster(this, 'cluster-wise-dev-ap', { vpc, clusterName: "cluster-wise-dev-ap" });
                                               
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
-      family: 'task-wise-dev-ap-spring-master',
+      family: 'task-wise-dev-ap-spring-master-1',
       memoryLimitMiB: 512,
       cpu: 256,
       executionRole: execRole,
       taskRole: execRole
     });
     
-    const mySecretArn = cdk.Stack.of(this).formatArn({
-      service: 'secretsmanager',
-      resource: 'secret',
-      resourceName: "dev/appBeta/Mysql:password::",
-      sep: ':',
-    });
-    const mySecret = secretsmanager.Secret.fromSecretArn(this, 'mysecret', mySecretArn);
-    const mySecretEnv = ecs.Secret.fromSecretsManager(mySecret);
+//     const mySecretArn = cdk.Stack.of(this).formatArn({
+//       service: 'secretsmanager',
+//       resource: 'secret',
+//       resourceName: "dev/appBeta/Mysql:password::",
+//       sep: ':',
+//     });
+//     const mySecret = secretsmanager.Secret.fromSecretArn(this, 'mysecret', mySecretArn);
+//     const mySecretEnv = ecs.Secret.fromSecretsManager(mySecret);
 
     //7. Create container for the task definition from ECR image
     taskDef.addContainer("container-wise-dev-ap-spring-master-spr", {
@@ -49,11 +49,11 @@ class FargateServiceNLB extends cdk.Stack {
 //         "MYSQL_DATABASE": "ARN:dbname::",
 //         "REDIS_HOST": "ARN"
 //       },
-      secrets: {
-        // Assign a JSON value from the secret to a environment variable
-        MYSQL_PASSWORD: mySecretEnv,
+//       secrets: {
+//         // Assign a JSON value from the secret to a environment variable
+//         MYSQL_PASSWORD: mySecretEnv,
 
-      }
+//       }
     }).addPortMappings({containerPort: 80}); //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     
     taskDef.addContainer("container-wise-dev-ap-spring-master-log", {
@@ -68,14 +68,14 @@ class FargateServiceNLB extends cdk.Stack {
 
 
     //13. Create Fargate Service from cluster, task definition and the security group
-    new ecs.FargateService(this, 'service-wise-dev-ap-spring-master', {
-      cluster,
-      taskDefinition: taskDef, 
-      assignPublicIp: true, 
-      serviceName: "service-wise-dev-ap-spring-master",
-      securityGroup:securityGroup,
-      desiredCount: 0
-    });
+//     new ecs.FargateService(this, 'service-wise-dev-ap-spring-master', {
+//       cluster,
+//       taskDefinition: taskDef, 
+//       assignPublicIp: true, 
+//       serviceName: "service-wise-dev-ap-spring-master",
+//       securityGroup:securityGroup,
+//       desiredCount: 0
+//     });
 
 //     //14. Add fargate service to the listener 
 //     listener.addTargets('search-api-tg', {
@@ -90,14 +90,16 @@ class FargateServiceNLB extends cdk.Stack {
 }
 
 // for development, use account/region from cdk cli
-const devEnv = {
-  account: "278772998776",
-  region: "ap-northeast-1",
-};
+// const devEnv = {
+//   account: "278772998776",
+//   region: "ap-northeast-1",
+// };
 
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-demo', { env: devEnv });
+new FargateServiceNLB(app, 'wise-demo', 
+//                       { env: devEnv }
+                     );
 
 app.synth();
