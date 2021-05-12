@@ -92,7 +92,7 @@ class FargateServiceNLB extends cdk.Stack {
 // for development, use account/region from cdk cli
 const devEnv = {
   account: "278772998776",
-  region: "us-east-1",
+  region: "ap-northeast-1",
 };
 
 
