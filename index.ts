@@ -3,7 +3,7 @@ import cdk = require('@aws-cdk/core');
 // import { Role, ServicePrincipal, PolicyStatement, Effect } from '@aws-cdk/aws-iam';
 import * as iam from '@aws-cdk/aws-iam';
 // import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
-import ec2 = require('@aws-cdk/aws-ec2');
+// import ec2 = require('@aws-cdk/aws-ec2');
 
 
 class FargateServiceNLB extends cdk.Stack {
