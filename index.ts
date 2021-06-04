@@ -104,6 +104,6 @@ const devEnv = {
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-demo', { env: devEnv, encryptBucket: false });
+new FargateServiceNLB(app, 'wise-demo', { env: devEnv});
 
 app.synth();
