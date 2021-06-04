@@ -5,16 +5,16 @@ import * as iam from '@aws-cdk/aws-iam';
 import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 import ec2 = require('@aws-cdk/aws-ec2');
 
-interface MultistackProps extends cdk.StackProps {
-  encryptBucket?: boolean;
-}
+// interface MultistackProps extends cdk.StackProps {
+//   encryptBucket?: boolean;
+// }
 
 class FargateServiceNLB extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props?: MultistackProps) {
+  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-    var master = props.encryptBucket;
-    var taskName = "task-wise-dev-ap-spring-${master}";
+//     var master = props.encryptBucket;
+    var taskName = "task-wise-dev-ap-spring-master";
     
     //1. VPC
     const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
