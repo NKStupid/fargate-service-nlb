@@ -6,7 +6,7 @@ import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 import ec2 = require('@aws-cdk/aws-ec2');
 
 interface MultistackProps extends cdk.StackProps {
-  microservice?: boolean;
+  microservice?: string;
 }
 
 class FargateServiceNLB extends cdk.Stack {
@@ -14,7 +14,7 @@ class FargateServiceNLB extends cdk.Stack {
     super(scope, id, props);
     
     var master = props && props.microservice;
-    var taskName = "task-wise-dev-ap-spring-master";
+    var taskName = "task-wise-dev-ap-spring-${master}";
     
     //1. VPC
     const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
