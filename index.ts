@@ -10,7 +10,7 @@ interface MicroserviceProps extends cdk.StackProps {
 }
 
 class FargateServiceNLB extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.App, id: string, props?: MicroserviceProps) {
     super(scope, id, props);
     
     var master = props.microservice;
