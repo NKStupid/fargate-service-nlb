@@ -113,6 +113,9 @@ const devEnv = {
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-demo', { env: devEnv,  microservice: "mr"},);
+new FargateServiceNLB(app, 'wise-demo', { env: devEnv,  microservice: "master"},);
+new FargateServiceNLB(app, 'wise-demo', { env: devEnv,  microservice: "workflow"},);
+new FargateServiceNLB(app, 'wise-demo', { env: devEnv,  microservice: "notification"},);
+new FargateServiceNLB(app, 'wise-demo', { env: devEnv,  microservice: "gateway"},);
 
 app.synth();
