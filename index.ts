@@ -10,6 +10,8 @@ class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
+    var master = props.microservice;
+    
     //1. VPC
     const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
     //2. IAM role
@@ -20,7 +22,7 @@ class FargateServiceNLB extends cdk.Stack {
     const cluster = new ecs.Cluster(this, 'cluster-wise-dev-ap', { vpc, clusterName: "cluster-wise-dev-ap" });
                                               
     //5. Create a task definition for our cluster to invoke a task
-    const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-master", {
+    const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-${master}", {
       family: 'task-wise-dev-ap-spring-master',
       memoryLimitMiB: 512,
       cpu: 256,
@@ -98,6 +100,6 @@ const devEnv = {
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-demo', { env: devEnv });
+new FargateServiceNLB(app, 'wise-demo', { env: devEnv, microserivce: "master" });
 
 app.synth();
