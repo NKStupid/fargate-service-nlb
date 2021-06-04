@@ -5,6 +5,9 @@ import * as iam from '@aws-cdk/aws-iam';
 import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 import ec2 = require('@aws-cdk/aws-ec2');
 
+interface MicroserviceProps extends cdk.StackProps {
+  microservice?: string;
+}
 
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
