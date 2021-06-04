@@ -1,0 +1,144 @@
+{
+  "Resources": {
+    "RolePolicy72E7D967": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "secretsmanager:GetSecretValue",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":secretsmanager:us-east-1:278772998776:secret:dev/appBeta/Mysql:password::"
+                  ]
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "RolePolicy72E7D967",
+        "Roles": [
+          "ecs-task-test"
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "wise-demo/Role/Policy/Resource"
+      }
+    },
+    "clusterwisedevap02A4F368": {
+      "Type": "AWS::ECS::Cluster",
+      "Properties": {
+        "ClusterName": "cluster-wise-dev-ap"
+      },
+      "Metadata": {
+        "aws:cdk:path": "wise-demo/cluster-wise-dev-ap/Resource"
+      }
+    },
+    "taskwisedevapspringmrB2F84267": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Essential": true,
+            "Image": "amazon/amazon-ecs-sample",
+            "Name": "container-wise-dev-ap-spring-mr-spr",
+            "PortMappings": [
+              {
+                "ContainerPort": 80,
+                "Protocol": "tcp"
+              }
+            ],
+            "Secrets": [
+              {
+                "Name": "MYSQL_PASSWORD",
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":secretsmanager:us-east-1:278772998776:secret:dev/appBeta/Mysql:password::"
+                    ]
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "Essential": false,
+            "Image": "hello-world",
+            "Name": "container-wise-dev-ap-spring-mr-log"
+          },
+          {
+            "Essential": false,
+            "Image": "hello-world",
+            "Name": "container-wise-dev-ap-spring-mr-xray"
+          }
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": "arn:aws:iam::278772998776:role/ecs-task-test",
+        "Family": "task-wise-dev-ap-spring-mr",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "TaskRoleArn": "arn:aws:iam::278772998776:role/ecs-task-test"
+      },
+      "Metadata": {
+        "aws:cdk:path": "wise-demo/task-wise-dev-ap-spring-mr/Resource"
+      }
+    },
+    "servicewisedevapspringmrService0BCA48BA": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "clusterwisedevap02A4F368"
+        },
+        "DeploymentConfiguration": {
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": [
+              "sg-03d8d9334085f039a"
+            ],
+            "Subnets": [
+              "subnet-0c262b5ad9588227b",
+              "subnet-0708deef6862def2a",
+              "subnet-03c1cae6cea39a2f5"
+            ]
+          }
+        },
+        "ServiceName": "service-wise-dev-ap-spring-mr",
+        "TaskDefinition": {
+          "Ref": "taskwisedevapspringmrB2F84267"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "wise-demo/service-wise-dev-ap-spring-mr/Service"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Modules": "aws-cdk=1.105.0,@aws-cdk/assets=1.26.0,@aws-cdk/aws-applicationautoscaling=1.26.0,@aws-cdk/aws-autoscaling=1.26.0,@aws-cdk/aws-autoscaling-common=1.26.0,@aws-cdk/aws-autoscaling-hooktargets=1.26.0,@aws-cdk/aws-cloudwatch=1.26.0,@aws-cdk/aws-ec2=1.26.0,@aws-cdk/aws-ecr=1.26.0,@aws-cdk/aws-ecr-assets=1.26.0,@aws-cdk/aws-ecs=1.26.0,@aws-cdk/aws-elasticloadbalancingv2=1.26.0,@aws-cdk/aws-events=1.26.0,@aws-cdk/aws-iam=1.26.0,@aws-cdk/aws-kms=1.26.0,@aws-cdk/aws-lambda=1.26.0,@aws-cdk/aws-logs=1.26.0,@aws-cdk/aws-s3=1.26.0,@aws-cdk/aws-s3-assets=1.26.0,@aws-cdk/aws-sam=1.26.0,@aws-cdk/aws-secretsmanager=1.26.0,@aws-cdk/aws-servicediscovery=1.26.0,@aws-cdk/aws-sns=1.26.0,@aws-cdk/aws-sns-subscriptions=1.26.0,@aws-cdk/aws-sqs=1.26.0,@aws-cdk/aws-ssm=1.26.0,@aws-cdk/core=1.26.0,@aws-cdk/cx-api=1.26.0,@aws-cdk/region-info=1.26.0,jsii-runtime=node.js/v10.24.1"
+      }
+    }
+  }
+}
