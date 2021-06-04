@@ -17,6 +17,14 @@ class FargateServiceNLB extends cdk.Stack {
     var taskName = "task-wise-dev-ap-spring-" + master;
     var serviceName = "service-wise-dev-ap-spring-" + master;
     
+    var mainImageURL = "amazon/amazon-ecs-sample";
+    var sidecarLogURL = "hello-world";
+    var sidecarXRayURL = "hello-world";
+    var mainContainerName = "container-wise-dev-ap-spring-" + master + "-spr";
+    var sidecarLogName = "container-wise-dev-ap-spring-" + master + "-log";
+    var sidecarXRayName = "container-wise-dev-ap-spring-" + master + "-xray";
+    
+    
     //1. VPC
     const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
     //2. IAM role
@@ -45,8 +53,8 @@ class FargateServiceNLB extends cdk.Stack {
     const mySecretEnv = ecs.Secret.fromSecretsManager(mySecret);
 
     //7. Create container for the task definition from ECR image
-    taskDef.addContainer("container-wise-dev-ap-spring-master-spr", {
-      image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
+    taskDef.addContainer(mainContainerName, {
+      image: ecs.ContainerImage.fromRegistry(mainImageURL),
       essential: true,
 //       environment: {
 //         "MYSQL_HOST": "ARN:host::",
@@ -63,13 +71,13 @@ class FargateServiceNLB extends cdk.Stack {
       }
     }).addPortMappings({containerPort: 80}); //8. Add port mappings to your container...Make sure you use TCP protocol for Network Load Balancer (NLB)
     
-    taskDef.addContainer("container-wise-dev-ap-spring-master-log", {
-      image: ecs.ContainerImage.fromRegistry("hello-world"),
+    taskDef.addContainer(sidecarLogName, {
+      image: ecs.ContainerImage.fromRegistry(sidecarLogURL),
       essential: false
     })
     
-    taskDef.addContainer("container-wise-dev-ap-spring-master-xray", {
-      image: ecs.ContainerImage.fromRegistry("hello-world"),
+    taskDef.addContainer(sidecarXRayName, {
+      image: ecs.ContainerImage.fromRegistry(sidecarXRayURL),
       essential: false
     })
 
