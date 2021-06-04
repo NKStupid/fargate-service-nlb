@@ -5,15 +5,15 @@ import * as iam from '@aws-cdk/aws-iam';
 import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 import ec2 = require('@aws-cdk/aws-ec2');
 
-// interface MultistackProps extends cdk.StackProps {
-//   encryptBucket?: boolean;
-// }
+interface MultistackProps extends cdk.StackProps {
+  microservice?: boolean;
+}
 
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-//     var master = props.encryptBucket;
+    var master = props && props.microservice;
     var taskName = "task-wise-dev-ap-spring-master";
     
     //1. VPC
@@ -104,6 +104,6 @@ const devEnv = {
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-demo', { env: devEnv});
+new FargateServiceNLB(app, 'wise-demo', { env: devEnv}, microservice: "master");
 
 app.synth();
