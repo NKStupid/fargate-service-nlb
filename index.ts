@@ -14,7 +14,7 @@ class FargateServiceNLB extends cdk.Stack {
     super(scope, id, props);
     
     var master = props && props.microservice;
-    var taskName = "task-wise-dev-ap-spring-${master}";
+    var taskName = "task-wise-dev-ap-spring-" + master;
     
     //1. VPC
     const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
@@ -104,6 +104,6 @@ const devEnv = {
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-demo', { env: devEnv,  microservice: "master"},);
+new FargateServiceNLB(app, 'wise-demo', { env: devEnv,  microservice: "mr"},);
 
 app.synth();
