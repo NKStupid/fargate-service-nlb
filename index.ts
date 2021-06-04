@@ -10,7 +10,7 @@ interface MultistackProps extends cdk.StackProps {
 }
 
 class FargateServiceNLB extends cdk.Stack {
-  constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.App, id: string, props?: MultistackProps) {
     super(scope, id, props);
     
     var master = props && props.microservice;
