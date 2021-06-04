@@ -6,14 +6,15 @@ import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 import ec2 = require('@aws-cdk/aws-ec2');
 
 interface MultistackProps extends cdk.StackProps {
-  microservice?: string;
+  microservice?: string[];
 }
 
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: MultistackProps) {
     super(scope, id, props);
     
-    var master = props && props.microservice;
+    var num = props && props.microservice;
+    num.forEach(function (master) {
     var taskName = "task-wise-dev-ap-spring-" + master;
     var serviceName = "service-wise-dev-ap-spring-" + master;
     
@@ -101,6 +102,8 @@ class FargateServiceNLB extends cdk.Stack {
 //     });
 
 //     new cdk.CfnOutput(this, 'ClusterARN: ', { value: cluster.clusterArn });
+      
+    });
   }
 }
 
@@ -113,9 +116,6 @@ const devEnv = {
 
 const app = new cdk.App();
 
-new FargateServiceNLB(app, 'wise-demo-master', { env: devEnv,  microservice: "master"},);
-new FargateServiceNLB(app, 'wise-demo-workflow', { env: devEnv,  microservice: "workflow"},);
-new FargateServiceNLB(app, 'wise-demo-notification', { env: devEnv,  microservice: "notification"},);
-new FargateServiceNLB(app, 'wise-demo-gateway', { env: devEnv,  microservice: "gateway"},);
+new FargateServiceNLB(app, 'wise-demo-master', { env: devEnv,  microservice: ["master", "workflow", "notification", "gateway"]},);
 
 app.synth();
