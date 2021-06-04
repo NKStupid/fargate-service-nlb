@@ -15,6 +15,7 @@ class FargateServiceNLB extends cdk.Stack {
     
     var master = props && props.microservice;
     var taskName = "task-wise-dev-ap-spring-" + master;
+    var serviceName = "service-wise-dev-ap-spring-" + master;
     
     //1. VPC
     const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
@@ -27,7 +28,7 @@ class FargateServiceNLB extends cdk.Stack {
                                               
     //5. Create a task definition for our cluster to invoke a task
     const taskDef = new ecs.FargateTaskDefinition(this, taskName, {
-      family: 'task-wise-dev-ap-spring-master',
+      family: taskName,
       memoryLimitMiB: 512,
       cpu: 256,
       executionRole: execRole,
@@ -74,11 +75,11 @@ class FargateServiceNLB extends cdk.Stack {
 
 
     //13. Create Fargate Service from cluster, task definition and the security group
-    new ecs.FargateService(this, 'service-wise-dev-ap-spring-master', {
+    new ecs.FargateService(this, serviceName, {
       cluster,
       taskDefinition: taskDef, 
       assignPublicIp: true, 
-      serviceName: "service-wise-dev-ap-spring-master",
+      serviceName: serviceName,
       securityGroup:securityGroup,
       desiredCount: 0
     });
