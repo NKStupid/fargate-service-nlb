@@ -5,15 +5,16 @@ import * as iam from '@aws-cdk/aws-iam';
 import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
 import ec2 = require('@aws-cdk/aws-ec2');
 
-interface MicroserviceProps extends cdk.StackProps {
-  microservice?: string;
+interface MultistackProps extends cdk.StackProps {
+  encryptBucket?: boolean;
 }
 
 class FargateServiceNLB extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: MicroserviceProps) {
     super(scope, id, props);
     
-    var master = props.microservice;
+    var master = props.encryptBucket;
+    var taskName = "task-wise-dev-ap-spring-${master}";
     
     //1. VPC
     const vpc = ec2.Vpc.fromLookup(this, 'ImportVPC',{isDefault: false,vpcId: "vpc-097fedf3787889d3a" });
@@ -25,7 +26,7 @@ class FargateServiceNLB extends cdk.Stack {
     const cluster = new ecs.Cluster(this, 'cluster-wise-dev-ap', { vpc, clusterName: "cluster-wise-dev-ap" });
                                               
     //5. Create a task definition for our cluster to invoke a task
-    const taskDef = new ecs.FargateTaskDefinition(this, "task-wise-dev-ap-spring-${master}", {
+    const taskDef = new ecs.FargateTaskDefinition(this, taskName, {
       family: 'task-wise-dev-ap-spring-master',
       memoryLimitMiB: 512,
       cpu: 256,
